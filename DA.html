@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DA2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script>
+      var socket = new WebSocket("ws://" + window.location.hostname + "/ws");
+      function sendvalues(){
+        var slider1 = document.getElementById("value-min").value;
+        var slider2 = document.getElementById("value-max").value;
+        var message = slider1 + "," + slider2;
+        socket.send(message);
+      }
+      setInterval(function(){
+        getnhietdo();
+        getdoam();
+        getdoamdat();
+      },1000)
+      function getnhietdo(){
+    
+        var xhttp= new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+          if(this.readyState ==4 && this.status == 200){
+            document.getElementById("temperature").textContent= this.responseText;
+          }
+        };
+        xhttp.open("GET","docnhietdo",true);
+        xhttp.send();
+        xhttp.abort()
+      } 
+      function getdoam(){
+        var xhttp= new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+          if(this.readyState ==4 && this.status == 200){
+            document.getElementById("humidity").textContent= this.responseText;
+          }
+        };
+        xhttp.open("GET","docdoam",true);
+        xhttp.send();
+      } 
+      function getdoamdat(){
+        var xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+          if(this.readyState ==4 && this.status == 200){
+            document.getElementById("doamdat").textContent= this.responseText;
+          }
+        };
+        xhttp.open("GET","docdoamdat",true);
+        xhttp.send();
+      } 
+    
+      </script>
+  </head>
+
+
+  <body id="page-top" style="margin-left: 10px;">
+    <!-- 2 hàng này chèn ảnh -->
+    <img src="https://lh3.googleusercontent.com/proxy/zWBSObNaemsYlfVRwrGp9pj5SKZXD5Dn8kZ9e_XUWhoe9KovRpitY5hbpQznZcQLbzTG1JVQD_DKUKPKWAi2x1wFmfhuAoYkKdXwSU74fxfvVyyh8bFvq_G6i7polR35PUHvpQpnggk?fbclid=IwZXh0bgNhZW0CMTAAAR2ahyLGk1PdyRHlES2mYIbk0gXc4ZVh-qFlAozYCgWPV_zbtmlQcQUOQ8s_aem_AVeDFgU6y-CFmkWD22LVflrv5eRMBcKHu9IsLcJDcI9AYvg64WVWACjHmJqzrJf7ZeKT7mGLQSX7SnZWerllASMi"
+      alt="Hinh anh" style="max-width: 100%; height: auto;">
+
+    <h1>Monitor temperature, air humidity and soil moisture</h1>
+    <div>Temperature: </div>
+    <div><span id="temperature">0</span>*C</div>
+    <div>Air humidity</div>
+    <div><span id="humidity">0</span>%</div>
+
+    <div>Soil moisture</div>
+    <div><span id="doamdat">0</span>%</div>
+
+    <div >
+      <p>Minimum soil moisture</p>
+      <input id ="min-soil-moisture" type="range" min="0" max="100" />
+      <p>Value: <output id="value-min"></output></p>
+
+      <!-- <button class="button" onclick="dieuchinhMIN('GIAMMIN')">-</button>
+      <span id ="min-soil-moisture">0</span>
+      <button class="button" onclick="dieuchinhMIN('TANGMIN')">+</button> -->
+    </div>
+
+    <div >
+      <p>Maximum soil moisture</p>
+      <input id ="max-soil-moisture" type="range" min="0" max="100" />
+      <p>Value: <output id="value-max"></output></p>
+      <!-- <button class="button" onclick="dieuchinhMAX('GIAMMAX')">-</button>
+      <span id ="max-soil-moisture">0</span>
+      <button class="button" onclick="dieuchinhMAX('TANGMAX')">+</button> -->
+      <button class="button" onclick="sendvalues">send</button>
+      <script>
+        const value_min = document.querySelector("#value-min");
+      const input_min = document.querySelector("#min-soil-moisture");
+      value_min.textContent = input_min.value;
+      input_min.addEventListener("input", (event) => {
+        value_min.textContent = event.target.value;
+      });
+
+      const value_max = document.querySelector("#value-max");
+      const input_max = document.querySelector("#max-soil-moisture");
+      value_max.textContent = input_max.value;
+      input_max.addEventListener("input", (event) => {
+        value_max.textContent = event.target.value;
+      });
+      </script>
+    </div>
+  </body>
+</html>
